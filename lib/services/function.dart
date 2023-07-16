@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +6,10 @@ signup(String email, password, username, BuildContext context) async {
   try {
     UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userCredential.user!.uid)
+        .set({'username': username, 'email': email});
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('Signup Successfully')));
   } on FirebaseAuthException catch (e) {
